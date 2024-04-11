@@ -11,6 +11,12 @@ struct Job {
   unsigned int idle_time;
 };
 
+struct Node {
+  struct Job data;
+  Node* next;
+  Node* prev;
+};
+
 int main() {
   fstream file;
   file.open("jobs.dat", ios::out);
@@ -23,7 +29,7 @@ int main() {
   // Create file queue
   Job file_queue[7000];
 
-  struct Job blank_job;
+  struct Job blank_job = {'_', 0, 0, 0};
   size_t index = 0;
   while (!file.eof()) {
     file.write(reinterpret_cast<char*>(&blank_job), sizeof(Job));
@@ -34,6 +40,21 @@ int main() {
   }
 
   size_t time = 0;
+
+  Node* priority_q = new Node;
+  priority_q->data = blank_job;
+  priority_q->next = nullptr;
+  priority_q->prev = nullptr;
+
+  Node* regular_q = new Node;
+  regular_q->data = blank_job;
+  regular_q->next = nullptr;
+  regular_q->prev = nullptr;
+
+  Node* idle_q = new Node;
+  idle_q->data = blank_job;
+  idle_q->next = nullptr;
+  idle_q->prev = nullptr;
 
   // Start simulation for initial metrics
   while (time < 550) {
