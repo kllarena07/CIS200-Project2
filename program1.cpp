@@ -114,5 +114,5 @@ int main() {
 
   file.close();
 
-  return 1;
+  return 0;
 }
