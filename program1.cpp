@@ -38,12 +38,17 @@ int insert_node(Node*& head, struct Job new_job) {
   }
 
   Node* current = head;
-  while (current->next != nullptr) {
+  while (current->next != nullptr &&
+         current->next->data.arrival_time < new_job.arrival_time) {
     current = current->next;
   }
 
-  current->next = new_node;
+  new_node->next = current->next;
   new_node->prev = current;
+  if (current->next != nullptr) {
+    current->next->prev = new_node;
+  }
+  current->next = new_node;
 
   return 0;
 }
@@ -93,7 +98,7 @@ int main() {
     insert_node(head, new_job);
   }
 
-  fstream file("jobs.txt", ios::out | ios::in | ios::trunc);
+  fstream file("jobs.dat", ios::out | ios::in | ios::trunc);
   if (!file.is_open()) {
     cout << "Error opening file\n";
     return 1;
@@ -101,8 +106,7 @@ int main() {
 
   Node* current = head->next;
   while (current != nullptr) {
-    file << current->data.job_type << " " << current->data.arrival_time << " "
-         << current->data.processing_time << "\n";
+    file.write(reinterpret_cast<char*>(&current->data), sizeof(Job));
     current = current->next;
   }
 
