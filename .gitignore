@@ -2,3 +2,4 @@
 .vscode
 program1
 program2
+build/*
