@@ -11,8 +11,6 @@ struct Job {
   unsigned int idle_time;
 };
 
-const size_t SIMULATION_LIFETIME = 7000;
-
 int main() {
   fstream file;
   file.open("jobs.dat", ios::out);
@@ -33,6 +31,18 @@ int main() {
 
     file_queue[index] = blank_job;
     ++index;
+  }
+
+  size_t time = 0;
+
+  // Start simulation for initial metrics
+  while (time < 550) {
+    ++time;
+  }
+
+  // Continue simulation for final metrics
+  while (time < 10000) {
+    ++time;
   }
 
   return 0;
