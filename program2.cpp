@@ -24,6 +24,15 @@ struct CPU {
   unsigned int total_time;
 };
 
+void queue_push_back(Node*& queue_head, Node* data) {
+  Node* current = queue_head;
+
+  while (current != nullptr) {
+    current = current->next;
+  }
+  current = data;
+}
+
 int main() {
   fstream file;
   file.open("jobs.dat", ios::out);
@@ -68,7 +77,23 @@ int main() {
 
   // Start simulation for initial metrics
   while (time < 550) {
+    for (size_t i = 0; i < 7000; ++i) {
+      if (file_queue[i].arrival_time > time) break;
+
+      if (file_queue[i].arrival_time == time) {
+        Node* new_node = new Node;
+        new_node->data = file_queue[i];
+        new_node->next = nullptr;
+        new_node->prev = nullptr;
+
+        file_queue[i].job_type == 'D' ? queue_push_back(priority_q, new_node)
+                                      : queue_push_back(regular_q, new_node);
+      }
+    }
+
     for (CPU& cpu : cpus) {
+      // load cpu with job from the queues according to the spec design of the
+      // project and then do the processing
     }
 
     ++time;
@@ -76,6 +101,25 @@ int main() {
 
   // Continue simulation for final metrics
   while (time < 10000) {
+    for (size_t i = 0; i < 7000; ++i) {
+      if (file_queue[i].arrival_time > time) break;
+
+      if (file_queue[i].arrival_time == time) {
+        Node* new_node = new Node;
+        new_node->data = file_queue[i];
+        new_node->next = nullptr;
+        new_node->prev = nullptr;
+
+        file_queue[i].job_type == 'D' ? queue_push_back(priority_q, new_node)
+                                      : queue_push_back(regular_q, new_node);
+      }
+    }
+
+    for (CPU& cpu : cpus) {
+      // load cpu with job from the queues according to the spec design of the
+      // project and then do the processing
+    }
+
     ++time;
   }
 
