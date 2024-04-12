@@ -73,5 +73,9 @@ int main() {
     ++time;
   }
 
+  delete priority_q;
+  delete regular_q;
+  delete idle_q;
+
   return 0;
 }
