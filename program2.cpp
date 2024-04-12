@@ -63,8 +63,14 @@ int main() {
   idle_q->next = nullptr;
   idle_q->prev = nullptr;
 
+  struct CPU cpu = {blank_job, 0, 0, 0};
+  CPU cpus[1] = {cpu};
+
   // Start simulation for initial metrics
   while (time < 550) {
+    for (CPU& cpu : cpus) {
+    }
+
     ++time;
   }
 
