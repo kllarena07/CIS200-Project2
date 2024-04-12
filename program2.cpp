@@ -39,7 +39,7 @@ int main() {
   struct Job blank_job = {'_', 0, 0, 0};
   size_t index = 0;
   while (!file.eof()) {
-    file.write(reinterpret_cast<char*>(&blank_job), sizeof(Job));
+    file.read(reinterpret_cast<char*>(&blank_job), sizeof(Job));
     blank_job.idle_time = 0;
 
     file_queue[index] = blank_job;
