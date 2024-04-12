@@ -17,6 +17,13 @@ struct Node {
   Node* prev;
 };
 
+struct CPU {
+  struct Job current_job;
+  unsigned int idle_time;
+  unsigned int busy_time;
+  unsigned int total_time;
+};
+
 int main() {
   fstream file;
   file.open("jobs.dat", ios::out);
