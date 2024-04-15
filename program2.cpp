@@ -136,6 +136,31 @@ int main()
         new_node->next = nullptr;
         new_node->prev = nullptr;
 
+        if(file_queue[i].job_type == 'A')
+        {
+          ++ arrivedAJobs;
+          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << file_queue[i].job_type << ":" << arrivedAJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if(file_queue[i].job_type == 'B')
+        {
+          ++ arrivedBJobs;
+          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << file_queue[i].job_type << ":" << arrivedBJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if(file_queue[i].job_type == 'C')
+        {
+          ++ arrivedCJobs;
+          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << file_queue[i].job_type << ":" << arrivedCJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if(file_queue[i].job_type == 'D')
+        {
+          ++ arrivedDJobs;
+          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << file_queue[i].job_type << ":" << arrivedDJobs << ", Processing Time: " << file_queue[i].processing_time << endl; 
+        }
+
         file_queue[i].job_type == 'D' ? queue_push_back(priority_q, new_node)
                                       : queue_push_back(regular_q, new_node);
       }
@@ -184,6 +209,31 @@ int main()
         new_node->data = file_queue[i];
         new_node->next = nullptr;
         new_node->prev = nullptr;
+
+        if(file_queue[i].job_type == 'A')
+        {
+          ++ arrivedAJobs;
+          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << file_queue[i].job_type << ":" << arrivedAJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if(file_queue[i].job_type == 'B')
+        {
+          ++ arrivedBJobs;
+          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << file_queue[i].job_type << ":" << arrivedBJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if(file_queue[i].job_type == 'C')
+        {
+          ++ arrivedCJobs;
+          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << file_queue[i].job_type << ":" << arrivedCJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if(file_queue[i].job_type == 'D')
+        {
+          ++ arrivedDJobs;
+          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << file_queue[i].job_type << ":" << arrivedDJobs << ", Processing Time: " << file_queue[i].processing_time << endl; 
+        }
 
         file_queue[i].job_type == 'D' ? queue_push_back(priority_q, new_node)
                                       : queue_push_back(regular_q, new_node);
