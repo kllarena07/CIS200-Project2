@@ -50,6 +50,8 @@ int main() {
   fstream file;
   file.open("jobs.dat", ios::out);
 
+  fstream logFile("log.txt", ios::out);
+
   if (!file) {
     cout << "Error opening file\n";
     return 1;
