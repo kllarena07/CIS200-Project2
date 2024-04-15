@@ -113,7 +113,7 @@ int main() {
   }
 
   // Continue simulation for final metrics
-  while (time < 10000) {
+  while (550 <= time < 10000) {
     for (size_t i = 0; i < 7000; ++i) {
       if (file_queue[i].arrival_time > time) break;
 
