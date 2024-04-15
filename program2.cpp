@@ -51,6 +51,25 @@ void queue_push_back(Node *&queue_head, Node *data)
   current = data;
 }
 
+int getQueueSize(Node *&queue_head)
+{
+  int totalAmount = 0;
+  Node *current = queue_head;
+
+  while (current != nullptr)
+  {
+    current = current->prev;
+  }
+
+    while (current != nullptr)
+  {
+    current = current->next;
+    ++totalAmount;
+  }
+  
+  return totalAmount;
+}
+
 int main()
 {
   // File stuff
@@ -178,7 +197,7 @@ int main()
   // First set of metrics
   cout << "550 TIME UNITS COMPLETED.\nMETRICS FOR 550 TIME UNITS:" << endl;
   cout << "\nNumber of processor(s) being used: " << numCPUs << endl;
-  cout << "Current queue size: " << getQueueSize() << endl;
+  cout << "Current queue size: " << getQueueSize(priority_q)+getQueueSize(regular_q)+getQueueSize(idle_q) << endl;
   cout << "Average queue size: " << (totalQueueSize/time) << endl;
   cout << "Maximum jobs in queue: " << highestQueueAmount << endl;
   cout << "Total time jobs are in queue: " << totalQueueTime << " time units" << endl;
