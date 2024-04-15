@@ -196,7 +196,7 @@ int main()
   cout << "Total time CPU(s) were idle: " << totalCPUIdleTime << " time units" << endl;
 
       // Continue simulation for final metrics
-      while (549 < time < 10000)
+      while (time > 549 && time < 10000)
   {
     for (size_t i = 0; i < 7000; ++i)
     {
