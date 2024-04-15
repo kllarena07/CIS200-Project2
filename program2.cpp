@@ -150,7 +150,25 @@ int main()
     ++time;
   }
 
-
+  // First set of metrics
+  cout << "550 TIME UNITS COMPLETED.\nMETRICS FOR 550 TIME UNITS:" << endl;
+  cout << "\nNumber of processor(s) being used: " << numCPUs << endl;
+  cout << "Current queue size: " << getQueueSize() << endl;
+  cout << "Average queue size: " << (totalQueueSize/time) << endl;
+  cout << "Maximum jobs in queue: " << highestQueueAmount << endl;
+  cout << "Total time jobs are in queue: " << totalQueueTime << " time units" << endl;
+  cout << "Average time jobs are in queue: " << (totalQueueTime/time) << " time units" << endl;
+  cout << "Total number of A jobs arrived: " << arrivedAJobs << endl;
+  cout << "Total number of A jobs completed: " << completedAJobs << endl;
+  cout << "Total number of B jobs arrived: " << arrivedBJobs << endl;
+  cout << "Total number of B jobs completed: " << completedBJobs << endl;
+  cout << "Total number of C jobs arrived: " << arrivedCJobs << endl;
+  cout << "Total number of C jobs completed: " << completedCJobs << endl;
+  cout << "Total number of D jobs arrived: " << arrivedDJobs << endl;
+  cout << "Total number of D jobs completed: " << completedDJobs << endl;
+  cout << "Total jobs completed: " << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) << endl;
+  cout << "Total time CPU(s) were processing: " << totalCPUProcessTime << " time units" << endl; 
+  cout << "Total time CPU(s) were idle: " << totalCPUIdleTime << " time units" << endl;
 
       // Continue simulation for final metrics
       while (549 < time < 10000)
