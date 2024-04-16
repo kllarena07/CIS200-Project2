@@ -12,10 +12,12 @@ Purpose: Project Two - Program Two | CPU
 
 #include <fstream>
 #include <iostream>
+#include <string>
 using std::cout;
 using std::endl;
 using std::fstream;
 using std::ios;
+using std::string;
 
 struct Job
 {
@@ -39,6 +41,7 @@ struct CPU
   unsigned int idle_time;
   unsigned int busy_time;
   unsigned int total_time; // I don't see a need for this, remove it?
+  int cpuNum;
 };
 
 void queue_push_back(Node *&queue_head, Node *data)
@@ -148,6 +151,13 @@ int main()
   struct CPU cpu = {blank_job, 0, 0, 0};
   CPU cpus[numCPUs] = {cpu};
 
+  int i = 1;
+    for (CPU &cpu : cpus)
+    {
+      cpu.cpuNum = i;
+      ++i;
+    }
+
   // Start simulation for initial metrics
   while (time < 550)
   {
@@ -230,8 +240,10 @@ int main()
         {
           priority_q->next->data = cpu.current_job;
           //delete the node from the data and relink the other nodes
+
           cpu.idle_time = 0;
           cpu.busy_time = 0;
+
           logFile << "Time " << time <<  ":     Begin Processing Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
           << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobNum << ", Processing Time: " << cpu.current_job.processing_time << endl; 
         }
@@ -239,8 +251,10 @@ int main()
         {
           idle_q->next->data = cpu.current_job;
           //delete the node from the data and relink the other nodes
+
           cpu.idle_time = 0;
           cpu.busy_time = 0;
+
            logFile << "Time " << time <<  ":     Begin Processing Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
           << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobNum << ", Processing Time: " << cpu.current_job.processing_time << endl; 
         }
@@ -248,8 +262,10 @@ int main()
         {
           regular_q->next->data = cpu.current_job;
           //delete the node from the data and relink the other nodes
+          
           cpu.idle_time = 0;
           cpu.busy_time = 0;
+
            logFile << "Time " << time <<  ":     Begin Processing Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
           << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobNum << ", Processing Time: " << cpu.current_job.processing_time << endl; 
         }
@@ -262,14 +278,37 @@ int main()
     }
 
 
-    //Increment all queue idle times
+    //Increment all queued jobs' idle times
     incrementQueue(priority_q);
     incrementQueue(idle_q);
     incrementQueue(regular_q);
 
+    string jobLog;
+    if (priority_q->next == nullptr && idle_q->next == nullptr && regular_q->next == nullptr)
+    {
+      jobLog = "Empty; ";
+    }
+    else
+    {
+      int queueSize;
+      string lastPart = " Job(s); ";
 
-    //Output a summary to the log file for each increment of time
-
+      queueSize = getQueueSize(priority_q)+getQueueSize(idle_q)+getQueueSize(regular_q);
+      jobLog = std::to_string(queueSize)+lastPart;
+    }
+    logFile << "Time " << time << ":     Queue: " << jobLog;
+     for (CPU &cpu : cpus)
+    {
+      if (cpu.busy_time > 0)
+      {
+      logFile << "CPU " << cpu.cpuNum << " Run Time:" << cpu.busy_time << ";  ";
+      }
+      else
+      {
+      logFile << "CPU " << cpu.cpuNum << " Idle Time:" << cpu.idle_time << ";  ";
+      }
+    }
+  
     ++time;
   }
 
