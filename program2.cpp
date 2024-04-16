@@ -308,7 +308,8 @@ int main()
       logFile << "CPU " << cpu.cpuNum << " Idle Time:" << cpu.idle_time << ";  ";
       }
     }
-  
+    logFile << endl;
+
     ++time;
   }
 
