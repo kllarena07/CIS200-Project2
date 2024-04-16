@@ -206,6 +206,7 @@ int main()
         else//See if there is a priority job to do
         {
           //check priority list, if there's nothing, continue processing, if cpu finishes, set cpu's current job to blankjob and reset idle & busy time
+          
           ++cpu.busy_time;
         }
       }
@@ -213,19 +214,22 @@ int main()
       else{//CPU isn't in use, so check if it's possible to give it a job
         if(priority_q->next != nullptr)//check to see if priority is empty
         {
-          //Load the job and remove it from the queue
+          priority_q->next->data = cpu.current_job;
+          //delete the node from the data and relink the other nodes
           cpu.idle_time = 0;
           cpu.busy_time = 0;
         }
         else if(idle_q->next != nullptr)//check to see if idle is empty
         {
-          //Load the job and remove it from the queue
+          idle_q->next->data = cpu.current_job;
+          //delete the node from the data and relink the other nodes
           cpu.idle_time = 0;
           cpu.busy_time = 0;
         }
         else if(regular_q->next != nullptr)//check to see if regular is empty
         {
-          //Load the job and remove it from the queue
+          regular_q->next->data = cpu.current_job;
+          //delete the node from the data and relink the other nodes
           cpu.idle_time = 0;
           cpu.busy_time = 0;
         }
