@@ -40,7 +40,6 @@ struct CPU
   struct Job current_job;
   unsigned int idle_time;
   unsigned int busy_time;
-  unsigned int total_time; // I don't see a need for this, remove it?
   int cpuNum;
 };
 
