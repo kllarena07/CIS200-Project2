@@ -20,6 +20,7 @@ using std::ios;
 struct Job
 {
   char job_type;
+  int jobNum;
   unsigned int arrival_time;
   unsigned int processing_time;
   unsigned int idle_time;
@@ -37,7 +38,7 @@ struct CPU
   struct Job current_job;
   unsigned int idle_time;
   unsigned int busy_time;
-  unsigned int total_time;
+  unsigned int total_time; // I don't see a need for this, remove it?
 };
 
 void queue_push_back(Node *&queue_head, Node *data)
@@ -58,16 +59,23 @@ int getQueueSize(Node *&queue_head)
 
   while (current != nullptr)
   {
-    current = current->prev;
-  }
-
-    while (current != nullptr)
-  {
     current = current->next;
     ++totalAmount;
   }
   
   return totalAmount;
+}
+
+void incrementQueue(Node *&queue_head)
+{
+  int totalAmount = 0;
+  Node *current = queue_head;
+
+  while (current != nullptr)
+  {
+    current = current->next;
+    ++current->data.idle_time;
+  }
 }
 
 int main()
@@ -76,7 +84,7 @@ int main()
   fstream file;
   file.open("jobs.dat", ios::out);
 
-  fstream logFile("log.txt", ios::out);
+  fstream logFile("log.txt", ios::out | fstream::app); // Automatically overwrites the previous logs for ease-of-use.
 
   if (!file)
   {
@@ -187,9 +195,38 @@ int main()
 
     for (CPU &cpu : cpus)
     {
-      // load cpu with job from the queues according to the spec design of the
-      // project and then do the processing
+      //Check if cpu is in use: if so, see if current process is priority or not, if not, sub a priority (or idle if no priority) in
+      if (cpu.current_job.job_type != blank_job.job_type)//The blank job type is '_', so it will never happen unless cpu's current job is set to blank job
+      { 
+        if(cpu.current_job.job_type == 'D')//Just process it
+        {
+          //Process it, if cpu finishes, set cpu's current job to blankjob and reset idle & busy time
+          ++cpu.busy_time;
+        }      
+        else//See if there is a priority job to do
+        {
+          //check priority list, if there's nothing, continue processing
+          ++cpu.busy_time;
+        }
+      }
+
+      else{//CPU isn't in use, so check if it's possible to give it a job
+        //check priority
+        //check idle
+        //check regular
+
+        //if nothing
+        ++cpu.idle_time;
+        ++totalCPUIdleTime;
+
+      }
+      //Do the work, if cpu finishes, then set cpu's current job to blankjob
+
+      //If cpu not in use, load a priority queue item first, then idle, then regular
     }
+
+
+    //Increment all queue idle times
 
     ++time;
   }
