@@ -101,7 +101,7 @@ int main()
     return 1;
   }
 
-  // Needed values
+  // Needed values for metrics
   const int numCPUs = 1;
   int arrivedAJobs = 0;
   int arrivedBJobs = 0;
@@ -152,7 +152,7 @@ int main()
   CPU cpus[numCPUs] = {cpu};
 
   int i = 1;
-    for (CPU &cpu : cpus)
+    for (CPU &cpu : cpus) //Giving each CPU a number for later use in output.
     {
       cpu.cpuNum = i;
       ++i;
