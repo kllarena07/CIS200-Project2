@@ -205,29 +205,43 @@ int main()
         }      
         else//See if there is a priority job to do
         {
-          //check priority list, if there's nothing, continue processing
+          //check priority list, if there's nothing, continue processing, if cpu finishes, set cpu's current job to blankjob and reset idle & busy time
           ++cpu.busy_time;
         }
       }
 
       else{//CPU isn't in use, so check if it's possible to give it a job
-        //check priority
-        //check idle
-        //check regular
-
-        //if nothing
-        ++cpu.idle_time;
-        ++totalCPUIdleTime;
-
+        if(priority_q->next != nullptr)//check to see if priority is empty
+        {
+          //Load the job and remove it from the queue
+          cpu.idle_time = 0;
+          cpu.busy_time = 0;
+        }
+        else if(idle_q->next != nullptr)//check to see if idle is empty
+        {
+          //Load the job and remove it from the queue
+          cpu.idle_time = 0;
+          cpu.busy_time = 0;
+        }
+        else if(regular_q->next != nullptr)//check to see if regular is empty
+        {
+          //Load the job and remove it from the queue
+          cpu.idle_time = 0;
+          cpu.busy_time = 0;
+        }
+        else//if all of those fail, then there are no jobs for the CPU to do, so increment the idle times.
+        {
+          ++cpu.idle_time;
+          ++totalCPUIdleTime;
+        }
       }
-      //Do the work, if cpu finishes, then set cpu's current job to blankjob
-
-      //If cpu not in use, load a priority queue item first, then idle, then regular
     }
 
 
     //Increment all queue idle times
-
+    incrementQueue(priority_q);
+    incrementQueue(idle_q);
+    incrementQueue(regular_q);
     ++time;
   }
 
@@ -250,59 +264,12 @@ int main()
   cout << "Total jobs completed: " << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) << endl;
   cout << "Total time CPU(s) were processing: " << totalCPUProcessTime << " time units" << endl; 
   cout << "Total time CPU(s) were idle: " << totalCPUIdleTime << " time units" << endl;
-
       // Continue simulation for final metrics
-      while (time > 549 && time < 10000)
+
+
+  while (time > 549 && time < 10000)
   {
-    for (size_t i = 0; i < 7000; ++i)
-    {
-      if (file_queue[i].arrival_time > time)
-        break;
-
-      if (file_queue[i].arrival_time == time)
-      {
-        Node *new_node = new Node;
-        new_node->data = file_queue[i];
-        new_node->next = nullptr;
-        new_node->prev = nullptr;
-
-        if(file_queue[i].job_type == 'A')
-        {
-          ++ arrivedAJobs;
-          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
-          << ", Job " << file_queue[i].job_type << ":" << arrivedAJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
-        }
-        else if(file_queue[i].job_type == 'B')
-        {
-          ++ arrivedBJobs;
-          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
-          << ", Job " << file_queue[i].job_type << ":" << arrivedBJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
-        }
-        else if(file_queue[i].job_type == 'C')
-        {
-          ++ arrivedCJobs;
-          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
-          << ", Job " << file_queue[i].job_type << ":" << arrivedCJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
-        }
-        else if(file_queue[i].job_type == 'D')
-        {
-          ++ arrivedDJobs;
-          logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
-          << ", Job " << file_queue[i].job_type << ":" << arrivedDJobs << ", Processing Time: " << file_queue[i].processing_time << endl; 
-        }
-
-        file_queue[i].job_type == 'D' ? queue_push_back(priority_q, new_node)
-                                      : queue_push_back(regular_q, new_node);
-      }
-    }
-
-    for (CPU &cpu : cpus)
-    {
-      // load cpu with job from the queues according to the spec design of the
-      // project and then do the processing
-    }
-
-    ++time;
+    //copy the other loop's contents, it should be the exact same,
   }
 
   delete priority_q;
