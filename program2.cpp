@@ -166,24 +166,28 @@ int main()
         if(file_queue[i].job_type == 'A')
         {
           ++ arrivedAJobs;
+          new_node->data.jobNum = arrivedAJobs;
           logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
           << ", Job " << file_queue[i].job_type << ":" << arrivedAJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
         else if(file_queue[i].job_type == 'B')
         {
           ++ arrivedBJobs;
+          new_node->data.jobNum = arrivedBJobs;
           logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
           << ", Job " << file_queue[i].job_type << ":" << arrivedBJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
         else if(file_queue[i].job_type == 'C')
         {
           ++ arrivedCJobs;
+          new_node->data.jobNum = arrivedCJobs;
           logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
           << ", Job " << file_queue[i].job_type << ":" << arrivedCJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
         else if(file_queue[i].job_type == 'D')
         {
           ++ arrivedDJobs;
+          new_node->data.jobNum = arrivedDJobs;
           logFile << "Time " << time <<  ":     Arrival: Overall Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
           << ", Job " << file_queue[i].job_type << ":" << arrivedDJobs << ", Processing Time: " << file_queue[i].processing_time << endl; 
         }
@@ -200,38 +204,54 @@ int main()
       { 
         if(cpu.current_job.job_type == 'D')//Just process it
         {
-          //Process it, if cpu finishes, set cpu's current job to blankjob and reset idle & busy time
+          //Process it 
           ++cpu.busy_time;
+          ++totalCPUProcessTime;
+          //if cpu finishes, output log, reset idle & busy time, and set cpu's current job to blankjob.
+          cpu.busy_time = 0;
+          cpu.idle_time = 0;
+
         }      
         else//See if there is a priority job to do
         {
-          //check priority list, if there's nothing, continue processing, if cpu finishes, set cpu's current job to blankjob and reset idle & busy time
+          //check priority list, if there's nothing, continue processing,
           
+          //Process it 
           ++cpu.busy_time;
+          ++totalCPUProcessTime;
+          //if cpu finishes, output log, reset idle & busy time, and set cpu's current job to blankjob.
+          cpu.busy_time = 0;
+          cpu.idle_time = 0;
         }
       }
 
       else{//CPU isn't in use, so check if it's possible to give it a job
-        if(priority_q->next != nullptr)//check to see if priority is empty
+        if(priority_q->next != nullptr)//check to see if priority queue has a job
         {
           priority_q->next->data = cpu.current_job;
           //delete the node from the data and relink the other nodes
           cpu.idle_time = 0;
           cpu.busy_time = 0;
+          logFile << "Time " << time <<  ":     Begin Processing Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobNum << ", Processing Time: " << cpu.current_job.processing_time << endl; 
         }
-        else if(idle_q->next != nullptr)//check to see if idle is empty
+        else if(idle_q->next != nullptr)//check to see if idle queue has a job
         {
           idle_q->next->data = cpu.current_job;
           //delete the node from the data and relink the other nodes
           cpu.idle_time = 0;
           cpu.busy_time = 0;
+           logFile << "Time " << time <<  ":     Begin Processing Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobNum << ", Processing Time: " << cpu.current_job.processing_time << endl; 
         }
-        else if(regular_q->next != nullptr)//check to see if regular is empty
+        else if(regular_q->next != nullptr)//check to see if regular queue has a job
         {
           regular_q->next->data = cpu.current_job;
           //delete the node from the data and relink the other nodes
           cpu.idle_time = 0;
           cpu.busy_time = 0;
+           logFile << "Time " << time <<  ":     Begin Processing Job:" << (completedAJobs+completedBJobs+completedCJobs+completedDJobs) 
+          << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobNum << ", Processing Time: " << cpu.current_job.processing_time << endl; 
         }
         else//if all of those fail, then there are no jobs for the CPU to do, so increment the idle times.
         {
@@ -246,6 +266,10 @@ int main()
     incrementQueue(priority_q);
     incrementQueue(idle_q);
     incrementQueue(regular_q);
+
+
+    //Output a summary to the log file for each increment of time
+
     ++time;
   }
 
@@ -273,7 +297,7 @@ int main()
 
   while (time > 549 && time < 10000)
   {
-    //copy the other loop's contents, it should be the exact same,
+    //copy the other loop's contents, it should be the exact same except for the time in termainal output. Redo any comments if needed too.
   }
 
   delete priority_q;
