@@ -26,6 +26,7 @@ const size_t MAX_JOBS = 7000;
 
 int get_random_int(int min, int max) { return min + rand() % (max - min + 1); }
 
+// Inserting a new node into its correct position in the linked list
 int insert_node(Node*& head, struct Job new_job) {
   Node* new_node = new Node;
   new_node->data = new_job;
@@ -55,6 +56,9 @@ int insert_node(Node*& head, struct Job new_job) {
 
 int main() {
   srand(time(NULL));
+
+  // Initialize a sorted linked list with all the data and then write all of it
+  // to the jobs.dat file
 
   Node* head = new Node;
   struct Job blank_job = {'_', 0, 0};
@@ -98,6 +102,7 @@ int main() {
     insert_node(head, new_job);
   }
 
+  // Overwriting all the data to try and make it more random
   fstream file("jobs.dat", ios::out | ios::in | ios::trunc);
   if (!file.is_open()) {
     cout << "Error opening file\n";
