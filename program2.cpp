@@ -48,7 +48,7 @@ void queue_push_back(Node *&queue_head, Node *data)
 {
   Node *current = queue_head;
 
-  while (current != nullptr)
+  while (current->next != nullptr)
   {
     current = current->next;
   }
@@ -62,8 +62,8 @@ int getQueueSize(Node *&queue_head)
 
   while (current != nullptr)
   {
-    current = current->next;
     ++totalAmount;
+    current = current->next;
   }
 
   return totalAmount;
@@ -71,13 +71,12 @@ int getQueueSize(Node *&queue_head)
 
 void incrementQueue(Node *&queue_head)
 {
-  int totalAmount = 0;
   Node *current = queue_head;
 
   while (current != nullptr)
   {
-    current = current->next;
-    ++current->data.idle_time;
+    current->data.idle_time++; // Increment the idle time of the current node
+    current = current->next; // Move to the next node
   }
 }
 
@@ -85,7 +84,7 @@ int main()
 {
   // File stuff
   fstream file;
-  file.open("jobs.dat", ios::out);
+  file.open("jobs.dat", ios::in);
 
   fstream logFile("log.txt", ios::out | fstream::app); // Automatically overwrites the previous logs for ease-of-use.
 
