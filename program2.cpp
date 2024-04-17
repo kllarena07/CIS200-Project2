@@ -22,11 +22,11 @@ using std::string;
 struct Job
 {
   char job_type;
-  int jobSpecificNum;
-  int jobOverallNum;
   unsigned int arrival_time;
   unsigned int processing_time;
   unsigned int idle_time;
+  int jobSpecificNum;
+  int jobOverallNum;
 };
 
 struct Node
@@ -119,7 +119,7 @@ int main()
   // Create file queue
   Job file_queue[7000];
 
-  struct Job blank_job = {'_', 0, 0, 0};
+  struct Job blank_job = { '_', 0, 0, 0, 0, 0 };
   size_t index = 0;
   while (!file.eof())
   {
