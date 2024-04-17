@@ -26,6 +26,7 @@ const size_t MAX_JOBS = 7000;
 
 int get_random_int(int min, int max) { return min + rand() % (max - min + 1); }
 
+// Inserting a new node into its correct position in the linked list
 int insert_node(Node*& head, struct Job new_job) {
   Node* new_node = new Node;
   new_node->data = new_job;
@@ -56,6 +57,9 @@ int insert_node(Node*& head, struct Job new_job) {
 int main() {
   srand(time(NULL));
 
+  // Initialize a sorted linked list with all the data and then write all of it
+  // to the jobs.dat file
+
   Node* head = new Node;
   struct Job blank_job = {'_', 0, 0};
   head->data = blank_job;
@@ -65,7 +69,7 @@ int main() {
   for (size_t i = 0; i < MAX_A_JOBS; ++i) {
     struct Job new_job;
     new_job.job_type = 'A';
-    new_job.arrival_time = get_random_int(6, 8);
+    new_job.arrival_time = i + get_random_int(6, 8);
     new_job.processing_time = get_random_int(1, 5);
 
     insert_node(head, new_job);
@@ -74,7 +78,7 @@ int main() {
   for (size_t i = 0; i < MAX_B_JOBS; ++i) {
     struct Job new_job;
     new_job.job_type = 'B';
-    new_job.arrival_time = get_random_int(2, 8);
+    new_job.arrival_time = MAX_A_JOBS + i + get_random_int(2, 8);
     new_job.processing_time = get_random_int(3, 13);
 
     insert_node(head, new_job);
@@ -83,7 +87,7 @@ int main() {
   for (size_t i = 0; i < MAX_C_JOBS; ++i) {
     struct Job new_job;
     new_job.job_type = 'C';
-    new_job.arrival_time = get_random_int(4, 18);
+    new_job.arrival_time = MAX_A_JOBS + MAX_B_JOBS + i + get_random_int(4, 18);
     new_job.processing_time = get_random_int(6, 12);
 
     insert_node(head, new_job);
@@ -92,12 +96,16 @@ int main() {
   for (size_t i = 0; i < MAX_D_JOBS; ++i) {
     struct Job new_job;
     new_job.job_type = 'D';
-    new_job.arrival_time = get_random_int(2, 12);
+    new_job.arrival_time =
+        MAX_A_JOBS + MAX_B_JOBS + MAX_C_JOBS + i + get_random_int(2, 12);
     new_job.processing_time = get_random_int(2, 22);
 
     insert_node(head, new_job);
   }
 
+  // Overwriting all the data to try and make it more random
+  // Change the extension of this file to a .txt if you want to view it in text
+  // form
   fstream file("jobs.dat", ios::out | ios::in | ios::trunc);
   if (!file.is_open()) {
     cout << "Error opening file\n";
@@ -106,6 +114,10 @@ int main() {
 
   Node* current = head->next;
   while (current != nullptr) {
+    // Uncomment this code if you want to write this data to a .txt file
+    // file << current->data.job_type << " " << current->data.arrival_time << "
+    // "
+    //      << current->data.processing_time << "\n";
     file.write(reinterpret_cast<char*>(&current->data), sizeof(Job));
     current = current->next;
   }
