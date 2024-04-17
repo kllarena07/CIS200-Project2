@@ -378,8 +378,8 @@ int main()
         }
       }
 
-      else
-      {                                  // CPU isn't in use, so check if it's possible to give it a job
+      else  // CPU isn't in use, so check if it's possible to give it a job
+      {                                  
         if (priority_q->next != nullptr) // check to see if priority queue has a job
         {
           cpu.current_job = priority_q->next->data; // Clone from priority_q to cpu
@@ -498,8 +498,344 @@ int main()
 
   while (time > 549 && time < 10000)
   {
-    // copy the other loop's contents, it should be the exact same except for the time in terminal output. Redo any comments if needed too.
+    for (size_t i = 0; i < 7000; ++i)
+    {
+      if (file_queue[i].arrival_time > time)
+        break;
+
+      if (file_queue[i].arrival_time == time)
+      {
+        Node *new_node = new Node;
+        new_node->data = file_queue[i];
+        new_node->next = nullptr;
+        new_node->prev = nullptr;
+
+        if (file_queue[i].job_type == 'A')
+        {
+          ++arrivedAJobs;
+          new_node->data.jobSpecificNum = arrivedAJobs;
+          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
+                  << ", Job " << file_queue[i].job_type << ":" << arrivedAJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if (file_queue[i].job_type == 'B')
+        {
+          ++arrivedBJobs;
+          new_node->data.jobSpecificNum = arrivedBJobs;
+          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
+                  << ", Job " << file_queue[i].job_type << ":" << arrivedBJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if (file_queue[i].job_type == 'C')
+        {
+          ++arrivedCJobs;
+          new_node->data.jobSpecificNum = arrivedCJobs;
+          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
+                  << ", Job " << file_queue[i].job_type << ":" << arrivedCJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+        else if (file_queue[i].job_type == 'D')
+        {
+          ++arrivedDJobs;
+          new_node->data.jobSpecificNum = arrivedDJobs;
+          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
+                  << ", Job " << file_queue[i].job_type << ":" << arrivedDJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
+        }
+
+        file_queue[i].job_type == 'D' ? queue_push_back(priority_q, new_node)
+                                      : queue_push_back(regular_q, new_node);
+      }
+    }
+
+    for (CPU &cpu : cpus)
+    {
+      // Check if cpu is in use: if so, see if current process is priority or not, if not, sub a priority (or idle if no priority) in
+      if (cpu.current_job.job_type != blank_job.job_type) // The blank job type is '_', so it will never happen unless cpu's current job is set to blank job
+      {
+        if (cpu.current_job.job_type == 'D') // Just process it
+        {
+          if ((cpu.current_job.processing_time - 1) > 0) // If there is still stuff left to process
+          {
+            --cpu.current_job.processing_time;
+            ++cpu.busy_time;
+            ++totalCPUProcessTime;
+          }
+
+          else if ((cpu.current_job.processing_time - 1) == 0) // This would be the last time for this item
+          {
+            logFile << "Time " << time << ":     Complete Processing Job:" << cpu.current_job.jobOverallNum << ", Job " << cpu.current_job.job_type
+                    << ":" << cpu.current_job.jobSpecificNum << endl;
+            ++cpu.busy_time;
+            ++totalCPUProcessTime;
+
+            if (priority_q->next != nullptr) // check to see if priority queue has a job
+            {
+              cpu.current_job = priority_q->next->data; // Clone from priority_q to cpu
+
+              Node *deleteNode = priority_q->next;
+              cpu.current_job = priority_q->next->data;
+              priority_q->next->next->prev = priority_q; // Delete from priority_q
+              priority_q->next = priority_q->next->next;
+              delete deleteNode;
+
+              cpu.idle_time = 0;
+              cpu.busy_time = 0;
+
+              logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                      << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+            }
+            else if (idle_q->next != nullptr) // check to see if idle queue has a job
+            {
+              cpu.current_job = idle_q->next->data; // Clone from idle_q to cpu
+
+              Node *deleteNode = idle_q->next;
+              cpu.current_job = idle_q->next->data;
+              idle_q->next->next->prev = idle_q; // Delete from idle_q
+              idle_q->next = idle_q->next->next;
+              delete deleteNode;
+
+              cpu.idle_time = 0;
+              cpu.busy_time = 0;
+
+              logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                      << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+            }
+            else if (regular_q->next != nullptr) // check to see if regular queue has a job
+            {
+              cpu.current_job = regular_q->next->data; // Clone from regular_q to cpu
+
+              Node *deleteNode = regular_q->next;
+              cpu.current_job = regular_q->next->data;
+              regular_q->next->next->prev = regular_q; // Delete from regular_q
+              regular_q->next = regular_q->next->next;
+              delete deleteNode;
+
+              cpu.idle_time = 0;
+              cpu.busy_time = 0;
+
+              logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                      << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+            }
+            else // if all of those fail, then there are no jobs for the CPU to do, so increment the idle times.
+            {
+              ++cpu.idle_time;
+              ++totalCPUIdleTime;
+            }
+          }
+        }
+        else // Current job is not priority, so check if there is a priority job or idle job in queue
+        {
+          // check priority list, if there's nothing, continue processing,
+          if (priority_q->next != nullptr)
+          { // There is a job in priority queue, so clone the current job to the idle queue and clone the priority
+            Node *new_node = new Node;
+            new_node->data = cpu.current_job;
+            new_node->next = nullptr; // Clone from cpu to idle_q
+            new_node->prev = nullptr;
+            queue_push_back(idle_q, new_node);
+
+            cpu.current_job = priority_q->next->data; // Clone from priority_q to cpu
+
+            Node *deleteNode = priority_q->next;
+            cpu.current_job = priority_q->next->data;
+            priority_q->next->next->prev = priority_q; // Delete from priority_q
+            priority_q->next = priority_q->next->next;
+            delete deleteNode;
+          }
+
+          // Process it
+          if ((cpu.current_job.processing_time - 1) > 0) // If there is still stuff left to process
+          {
+            --cpu.current_job.processing_time;
+            ++cpu.busy_time;
+            ++totalCPUProcessTime;
+          }
+          else if ((cpu.current_job.processing_time - 1) == 0) // This would be the last time for this item
+          {
+            logFile << "Time " << time << ":     Complete Processing Job:" << cpu.current_job.jobOverallNum << ", Job " << cpu.current_job.job_type
+                    << ":" << cpu.current_job.jobSpecificNum << endl;
+            ++cpu.busy_time;
+            ++totalCPUProcessTime;
+
+            if (priority_q->next != nullptr) // check to see if priority queue has a job
+            {
+              cpu.current_job = priority_q->next->data; // Clone from priority_q to cpu
+
+              Node *deleteNode = priority_q->next;
+              cpu.current_job = priority_q->next->data;
+              priority_q->next->next->prev = priority_q; // Delete from priority_q
+              priority_q->next = priority_q->next->next;
+              delete deleteNode;
+
+              cpu.idle_time = 0;
+              cpu.busy_time = 0;
+
+              logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                      << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+            }
+            else if (idle_q->next != nullptr) // check to see if idle queue has a job
+            {
+              cpu.current_job = idle_q->next->data; // Clone from idle_q to cpu
+
+              Node *deleteNode = idle_q->next;
+              cpu.current_job = idle_q->next->data;
+              idle_q->next->next->prev = idle_q; // Delete from idle_q
+              idle_q->next = idle_q->next->next;
+              delete deleteNode;
+
+              cpu.idle_time = 0;
+              cpu.busy_time = 0;
+
+              logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                      << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+            }
+            else if (regular_q->next != nullptr) // check to see if regular queue has a job
+            {
+              cpu.current_job = regular_q->next->data; // Clone from regular_q to cpu
+
+              Node *deleteNode = regular_q->next;
+              cpu.current_job = regular_q->next->data;
+              regular_q->next->next->prev = regular_q; // Delete from regular_q
+              regular_q->next = regular_q->next->next;
+              delete deleteNode;
+
+              cpu.idle_time = 0;
+              cpu.busy_time = 0;
+
+              logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                      << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+            }
+            else // if all of those fail, then there are no jobs for the CPU to do, so set it to idle
+            {
+              cpu.idle_time = 0;
+              cpu.busy_time = 0;
+            }
+          }
+        }
+      }
+
+      else  // CPU isn't in use, so check if it's possible to give it a job
+      {                                  
+        if (priority_q->next != nullptr) // check to see if priority queue has a job
+        {
+          cpu.current_job = priority_q->next->data; // Clone from priority_q to cpu
+
+          Node *deleteNode = priority_q->next;
+          cpu.current_job = priority_q->next->data;
+          priority_q->next->next->prev = priority_q; // Delete from priority_q
+          priority_q->next = priority_q->next->next;
+          delete deleteNode;
+
+          cpu.idle_time = 0;
+          cpu.busy_time = 0;
+
+          logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                  << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+        }
+        else if (idle_q->next != nullptr) // check to see if idle queue has a job
+        {
+          cpu.current_job = idle_q->next->data; // Clone from idle_q to cpu
+
+          Node *deleteNode = idle_q->next;
+          cpu.current_job = idle_q->next->data;
+          idle_q->next->next->prev = idle_q; // Delete from idle_q
+          idle_q->next = idle_q->next->next;
+          delete deleteNode;
+
+          cpu.idle_time = 0;
+          cpu.busy_time = 0;
+
+          logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                  << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+        }
+        else if (regular_q->next != nullptr) // check to see if regular queue has a job
+        {
+          cpu.current_job = regular_q->next->data; // Clone from regular_q to cpu
+
+          Node *deleteNode = regular_q->next;
+          cpu.current_job = regular_q->next->data;
+          regular_q->next->next->prev = regular_q; // Delete from regular_q
+          regular_q->next = regular_q->next->next;
+          delete deleteNode;
+
+          cpu.idle_time = 0;
+          cpu.busy_time = 0;
+
+          logFile << "Time " << time << ":     Begin Processing Job:" << (cpu.current_job.jobOverallNum)
+                  << ", Job " << cpu.current_job.job_type << ":" << cpu.current_job.jobSpecificNum << ", Processing Time: " << cpu.current_job.processing_time << endl;
+        }
+        else // if all of those fail, then there are no jobs for the CPU to do, so increment the idle times.
+        {
+          ++cpu.idle_time;
+          ++totalCPUIdleTime;
+        }
+      }
+    }
+
+    // Increment all queued jobs' idle times
+    incrementQueue(priority_q);
+    incrementQueue(idle_q);
+    incrementQueue(regular_q);
+
+    // Every time increment requires a log
+
+    string jobLog;
+    if (priority_q->next == nullptr && idle_q->next == nullptr && regular_q->next == nullptr)
+    {
+      jobLog = "Empty; ";
+    }
+    else
+    {
+      int queueSize;
+      string lastPart = " Job(s); ";
+
+      queueSize = getQueueSize(priority_q) + getQueueSize(idle_q) + getQueueSize(regular_q);
+      jobLog = std::to_string(queueSize) + lastPart;
+    }
+
+    logFile << "Time " << time << ":     Queue: " << jobLog;
+
+    for (CPU &cpu : cpus)
+    {
+      if (cpu.busy_time > 0)
+      {
+        logFile << "CPU " << cpu.cpuNum << " Run Time:" << cpu.busy_time << ";  ";
+      }
+      else
+      {
+        logFile << "CPU " << cpu.cpuNum << " Idle Time:" << cpu.idle_time << ";  ";
+      }
+    }
+    logFile << endl;
+
+    ++time;
   }
+
+
+ // Last set of metrics
+  cout << "10000 TIME UNITS COMPLETED.\nMETRICS FOR 10000 TIME UNITS:" << endl;
+  cout << "\nNumber of processor(s) being used: " << numCPUs << endl;
+  cout << "Current queue size: " << getQueueSize(priority_q) + getQueueSize(regular_q) + getQueueSize(idle_q) << endl;
+  cout << "Average queue size: " << (totalQueueSize / time) << endl;
+  cout << "Maximum jobs in queue: " << highestQueueAmount << endl;
+  cout << "Total time jobs are in queue: " << totalQueueTime << " time units" << endl;
+  cout << "Average time jobs are in queue: " << (totalQueueTime / time) << " time units" << endl;
+  cout << "Total number of A jobs arrived: " << arrivedAJobs << endl;
+  cout << "Total number of A jobs completed: " << completedAJobs << endl;
+  cout << "Total number of B jobs arrived: " << arrivedBJobs << endl;
+  cout << "Total number of B jobs completed: " << completedBJobs << endl;
+  cout << "Total number of C jobs arrived: " << arrivedCJobs << endl;
+  cout << "Total number of C jobs completed: " << completedCJobs << endl;
+  cout << "Total number of D jobs arrived: " << arrivedDJobs << endl;
+  cout << "Total number of D jobs completed: " << completedDJobs << endl;
+  cout << "Total jobs completed: " << (completedAJobs + completedBJobs + completedCJobs + completedDJobs) << endl;
+  cout << "Total time CPU(s) were processing: " << totalCPUProcessTime << " time units" << endl;
+  cout << "Total time CPU(s) were idle: " << totalCPUIdleTime << " time units" << endl;
+
+
+  logFile.close();
+
 
   delete priority_q;
   delete regular_q;
