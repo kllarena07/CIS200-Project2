@@ -116,6 +116,7 @@ int main()
   int totalQueueSize = 0;
   int highestQueueAmount = 0;
 
+
   // Create file queue
   Job file_queue[7000];
 
@@ -176,7 +177,7 @@ int main()
         {
           ++arrivedAJobs;
           new_node->data.jobSpecificNum = arrivedAJobs;
-          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          new_node->data.jobOverallNum = (arrivedAJobs + arrivedBJobs + arrivedCJobs + arrivedDJobs);
           logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
                   << ", Job " << file_queue[i].job_type << ":" << arrivedAJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
@@ -184,7 +185,7 @@ int main()
         {
           ++arrivedBJobs;
           new_node->data.jobSpecificNum = arrivedBJobs;
-          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          new_node->data.jobOverallNum = (arrivedAJobs + arrivedBJobs + arrivedCJobs + arrivedDJobs);
           logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
                   << ", Job " << file_queue[i].job_type << ":" << arrivedBJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
@@ -192,7 +193,7 @@ int main()
         {
           ++arrivedCJobs;
           new_node->data.jobSpecificNum = arrivedCJobs;
-          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          new_node->data.jobOverallNum = (arrivedAJobs + arrivedBJobs + arrivedCJobs + arrivedDJobs);
           logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
                   << ", Job " << file_queue[i].job_type << ":" << arrivedCJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
@@ -200,7 +201,7 @@ int main()
         {
           ++arrivedDJobs;
           new_node->data.jobSpecificNum = arrivedDJobs;
-          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          new_node->data.jobOverallNum = (arrivedAJobs + arrivedBJobs + arrivedCJobs + arrivedDJobs);
           logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
                   << ", Job " << file_queue[i].job_type << ":" << arrivedDJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
@@ -470,6 +471,12 @@ int main()
       }
     }
     logFile << endl;
+
+
+  if(highestQueueAmount < (getQueueSize(priority_q) + getQueueSize(idle_q) + getQueueSize(regular_q)))
+  {
+    highestQueueAmount = (getQueueSize(priority_q) + getQueueSize(idle_q) + getQueueSize(regular_q));
+  }
 
     ++time;
   }
@@ -513,7 +520,7 @@ int main()
         {
           ++arrivedAJobs;
           new_node->data.jobSpecificNum = arrivedAJobs;
-          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          new_node->data.jobOverallNum = (arrivedAJobs + arrivedBJobs + arrivedCJobs + arrivedDJobs);
           logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
                   << ", Job " << file_queue[i].job_type << ":" << arrivedAJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
@@ -521,7 +528,7 @@ int main()
         {
           ++arrivedBJobs;
           new_node->data.jobSpecificNum = arrivedBJobs;
-          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          new_node->data.jobOverallNum = (arrivedAJobs + arrivedBJobs + arrivedCJobs + arrivedDJobs);
           logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
                   << ", Job " << file_queue[i].job_type << ":" << arrivedBJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
@@ -529,7 +536,7 @@ int main()
         {
           ++arrivedCJobs;
           new_node->data.jobSpecificNum = arrivedCJobs;
-          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          new_node->data.jobOverallNum = (arrivedAJobs + arrivedBJobs + arrivedCJobs + arrivedDJobs);
           logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
                   << ", Job " << file_queue[i].job_type << ":" << arrivedCJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
@@ -537,7 +544,7 @@ int main()
         {
           ++arrivedDJobs;
           new_node->data.jobSpecificNum = arrivedDJobs;
-          new_node->data.jobOverallNum = (completedAJobs + completedBJobs + completedCJobs + completedDJobs);
+          new_node->data.jobOverallNum = (arrivedAJobs + arrivedBJobs + arrivedCJobs + arrivedDJobs);
           logFile << "Time " << time << ":     Arrival: Overall Job:" << new_node->data.jobOverallNum
                   << ", Job " << file_queue[i].job_type << ":" << arrivedDJobs << ", Processing Time: " << file_queue[i].processing_time << endl;
         }
@@ -807,6 +814,12 @@ int main()
       }
     }
     logFile << endl;
+
+
+  if(highestQueueAmount < (getQueueSize(priority_q) + getQueueSize(idle_q) + getQueueSize(regular_q)))
+  {
+    highestQueueAmount = (getQueueSize(priority_q) + getQueueSize(idle_q) + getQueueSize(regular_q));
+  }
 
     ++time;
   }
